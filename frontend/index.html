@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kıyafet Dönüştürücü</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="min-h-screen bg-slate-100 dark:bg-slate-900 dark:text-slate-100 transition-colors">
+  <!-- Header -->
+  <header class="bg-teal-600 dark:bg-teal-700 text-white">
+    <div class="container mx-auto flex items-center justify-between p-4">
+      <h1 class="text-xl font-semibold flex items-center gap-2">
+        <span>👕♻️</span> <span data-i18n="app_title">Kıyafet Dönüştürücü</span>
+      </h1>
+      <nav class="flex gap-4 text-sm font-medium items-center">
+        <a href="#" data-page="home" id="home-link" class="hover:underline" data-i18n="nav_home">Ana Sayfa</a>
+        <a href="#" data-page="register" id="register-link" class="hover:underline" data-i18n="nav_register">Üye Ol</a>
+        <a href="#" data-page="login" id="login-link" class="hover:underline" data-i18n="nav_login">Giriş Yap</a>
+        <a href="#" data-page="suggest" id="suggest-link" class="hover:underline hidden" data-i18n="nav_suggest">Öneri Al</a>
+        <a href="#" data-page="profile" id="profile-link" class="hover:underline hidden" data-i18n="nav_profile">Profilim</a>
+        <a href="#" id="logout-link" class="hover:underline hidden" data-i18n="nav_logout">Çıkış Yap</a>
+        <span id="xp-display" class="text-yellow-300 font-bold hidden">XP: 0</span>
+        <button id="toggle-dark" class="ml-2 text-lg">🌓</button>
+        <button id="toggle-lang" class="ml-1 text-sm border px-2 rounded">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container mx-auto p-6">
+    <!-- Home -->
+    <section id="home" class="space-y-4">
+      <h2 class="text-2xl font-semibold" data-i18n="home_title">Hoş Geldiniz!</h2>
+      <p data-i18n="home_desc">
+        Bu uygulama, <strong>eskiyen kıyafetlerinizi</strong> yaratıcı biçimde dönüştürmenize yardımcı olur.
+        Yapay zekâ (Gemini) destekli botumuz, birkaç saniyede geri dönüşüm fikri ve gerekli malzemeleri sunar.
+      </p>
+      <ul class="list-disc list-inside space-y-1">
+        <li>♻️ Sürdürülebilir yaşamı destekleyin</li>
+        <li>💡 Yaratıcı fikirler keşfedin</li>
+        <li>🏆 Dönüştürdükçe XP kazanın & rozet açın</li>
+      </ul>
+    </section>
+
+    <!-- Register -->
+    <section id="register" class="hidden">
+      <h2 class="text-xl font-semibold mb-4" data-i18n="register_title">Üye Ol</h2>
+      <form id="register-form" class="space-y-3 max-w-md">
+        <input name="username" placeholder="Kullanıcı Adı" required class="input" data-i18n-placeholder="ph_username" />
+        <input name="email" type="email" placeholder="E‑posta" required class="input" data-i18n-placeholder="ph_email" />
+        <input name="password" type="password" placeholder="Şifre" required class="input" data-i18n-placeholder="ph_password" />
+        <button class="btn-primary" data-i18n="btn_register">Kaydol</button>
+      </form>
+      <p id="register-msg" class="mt-3 text-teal-600 dark:text-teal-400"></p>
+    </section>
+
+    <!-- Login -->
+    <section id="login" class="hidden">
+      <h2 class="text-xl font-semibold mb-4" data-i18n="login_title">Giriş Yap</h2>
+      <form id="login-form" class="space-y-3 max-w-md">
+        <input name="email" type="email" placeholder="E‑posta" required class="input" data-i18n-placeholder="ph_email" />
+        <input name="password" type="password" placeholder="Şifre" required class="input" data-i18n-placeholder="ph_password" />
+        <button class="btn-primary" data-i18n="btn_login">Giriş</button>
+      </form>
+      <p id="login-msg" class="mt-3"></p>
+    </section>
+
+    <!-- Suggest -->
+    <section id="suggest" class="hidden">
+      <h2 class="text-xl font-semibold mb-4" data-i18n="suggest_title">AI’dan Öneri Al</h2>
+      <form id="suggest-form" class="space-y-3 max-w-md">
+        <input name="clothing_item" placeholder="örnek: eski kot pantolon" required class="input" data-i18n-placeholder="ph_item" />
+        <button class="btn-primary" data-i18n="btn_getidea">Fikir Al</button>
+      </form>
+      <pre id="suggest-result" class="mt-4 whitespace-pre-wrap"></pre>
+    </section>
+
+    <!-- Profile -->
+    <section id="profile" class="hidden">
+      <h2 class="text-xl font-semibold mb-2" data-i18n="profile_title">Profil Bilgilerim</h2>
+      <p><strong>E‑posta:</strong> <span id="profile-email-display"></span></p>
+      <form id="profile-form" class="space-y-3 max-w-md mt-2">
+        <input type="hidden" name="email" id="profile-email" />
+        <input name="new_username" placeholder="Yeni Kullanıcı Adı" class="input" data-i18n-placeholder="ph_newusername" />
+        <input name="current_password" type="password" placeholder="Mevcut Şifre" required class="input" data-i18n-placeholder="ph_currentpass" />
+        <input name="new_password" type="password" placeholder="Yeni Şifre" class="input" data-i18n-placeholder="ph_newpass" />
+        <button class="btn-primary" data-i18n="btn_update">Güncelle</button>
+      </form>
+      <p id="profile-msg" class="mt-3"></p>
+    </section>
+  </main>
+
+  <!-- Tailwind helpers -->
+  <style>
+    .input{ @apply w-full p-2 border rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800; }
+    .btn-primary{ @apply w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-md transition; }
+  </style>
+
+  <!-- Scripts -->
+  <script>
+    // I18n dictionary
+    const dict={
+      tr:{app_title:'Kıyafet Dönüştürücü',nav_home:'Ana Sayfa',nav_register:'Üye Ol',nav_login:'Giriş Yap',nav_suggest:'Öneri Al',nav_profile:'Profilim',nav_logout:'Çıkış Yap',home_title:'Hoş Geldiniz!',home_desc:'Bu uygulama, eskiyen kıyafetlerinizi yaratıcı biçimde dönüştürmenize yardımcı olur.',register_title:'Üye Ol',login_title:'Giriş Yap',suggest_title:'AI’dan Öneri Al',profile_title:'Profil Bilgilerim',btn_register:'Kaydol',btn_login:'Giriş',btn_getidea:'Fikir Al',btn_update:'Güncelle',ph_username:'Kullanıcı Adı',ph_email:'E‑posta',ph_password:'Şifre',ph_item:'örnek: eski kot pantolon',ph_newusername:'Yeni Kullanıcı Adı',ph_currentpass:'Mevcut Şifre',ph_newpass:'Yeni Şifre'},
+      en:{app_title:'Clothes Upcycler',nav_home:'Home',nav_register:'Sign Up',nav_login:'Log In',nav_suggest:'Get Idea',nav_profile:'My Profile',nav_logout:'Log Out',home_title:'Welcome!',home_desc:'This app helps you creatively upcycle your clothes using AI.',register_title:'Sign Up',login_title:'Log In',suggest_title:'Get AI Idea',profile_title:'My Profile',btn_register:'Sign Up',btn_login:'Log In',btn_getidea:'Get Idea',btn_update:'Update',ph_username:'Username',ph_email:'Email',ph_password:'Password',ph_item:'e.g., old jeans',ph_newusername:'New Username',ph_currentpass:'Current Password',ph_newpass:'New Password'}
+    };
+    let currentLang='tr';
+    function applyLang(lang){currentLang=lang;document.documentElement.lang=lang;document.getElementById('toggle-lang').textContent=lang==='tr'?'EN':'TR';document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=dict[lang][el.dataset.i18n]||el.textContent});document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.placeholder=dict[lang][el.dataset.i18nPlaceholder]||el.placeholder});}
+
+    // Routing
+    const sections=document.querySelectorAll('main > section');function show(page){sections.forEach(s=>s.classList.toggle('hidden',s.id!==page))}
+    document.querySelectorAll('nav a[data-page]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();show(a.dataset.page)}));
+
+    // Nav update
+    function updateNav(logged){['register','login','logout','suggest','profile','xp-display'].forEach(id=>{const el=document.getElementById(id+'-link')||document.getElementById(id);if(!el)return;const show=(id==='xp-display')?logged:(id==='register'||id==='login')?!logged:logged;el.classList.toggle('hidden',!show);});}
+
+    let xp=0,currentEmail=null,isLogged=false;
+
+    // Register
+    document.getElementById('register-form')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.target);const res=await fetch('/register',{method:'POST',body:fd});document.getElementById('register-msg').textContent=await res.text();if(res.ok){e.target.reset();show('login')}});
+
+    // Login
+    document.getElementById('login-form')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.target);const res=await fetch('/login',{method:'POST',body:fd});const data=await res.json().catch(()=>({detail:'Hata'}));document.getElementById('login-msg').textContent=data.message||data.detail;if(res.ok){isLogged=true;currentEmail=fd.get('email');updateNav(true);document.getElementById('xp-display').textContent=`XP: ${xp}`;document.getElementById('profile-email').value=currentEmail;document.getElementById('profile-email-display').textContent=currentEmail;show('suggest');}});
+
+    // Logout
+    document.getElementById('logout-link').addEventListener('click',e=>{e.preventDefault();isLogged=false;updateNav(false);show('home');});
+
+    // Suggest
+    document.getElementById('suggest-form')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.target);const resultEl=document.getElementById('suggest-result');try{const res=await fetch('/suggest',{method:'POST',body:fd});if(!res.ok){const txt=await res.text();resultEl.textContent='⚠️ Sunucu hatası: '+txt;return;}const data=await res.json();resultEl.textContent=data.idea;if(isLogged){xp+=10;document.getElementById('xp-display').textContent=`XP: ${xp}`;}}catch(err){resultEl.textContent='⚠️ İstek gönderilemedi: '+err.message;}});
+
+    // Profile update
+    document.getElementById('profile-form')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.target);const res=await fetch('/update-profile',{method:'POST',body:fd});const data=await res.json().catch(()=>({detail:'Hata'}));document.getElementById('profile-msg').textContent=data.message||data.detail;});
+
+    // Toggles
+    document.getElementById('toggle-dark').addEventListener('click',()=>document.documentElement.classList.toggle('dark'));
+    document.getElementById('toggle-lang').addEventListener('click',()=>applyLang(currentLang==='tr'?'en':'tr'));
+
+    // Init
+    updateNav(false);applyLang('tr');
+  </script>
+</body>
+</html>
